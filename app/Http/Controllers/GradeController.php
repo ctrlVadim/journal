@@ -18,7 +18,7 @@ class GradeController extends Controller
 
     public function show()
     {
-        return response()->json(Grade::with(['user', 'subject'])->all(), 200);
+        return response()->json(Grade::with(['student', 'subject'])->get(), 200);
     }
 
 

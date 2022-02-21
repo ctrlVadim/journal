@@ -20,6 +20,7 @@
         "sass": "^1.32.11",
         "sass-loader": "^11.0.1",
         "vue": "^2.6.12",
+        "vue-loader": "^15.9.8",
         "vue-template-compiler": "^2.6.12"
     },
     "name": "journal",
@@ -38,5 +39,9 @@
     "bugs": {
         "url": "https://github.com/ctrlVadim/journal/issues"
     },
-    "homepage": "https://github.com/ctrlVadim/journal#readme"
+    "homepage": "https://github.com/ctrlVadim/journal#readme",
+    "dependencies": {
+        "vue-router": "^3.5.3",
+        "vue-ui-preloader": "^1.2.1"
+    }
 }

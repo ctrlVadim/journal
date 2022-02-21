@@ -9,7 +9,9 @@ class Grade extends Model
 {
     use HasFactory;
 
-    protected $table = 'student';
+    public $timestamps = false;
+
+    protected $table = 'grade';
 
     protected $fillable = [
         'student_id',
@@ -19,10 +21,10 @@ class Grade extends Model
     ];
 
     public function subject(){
-        return $this->hasMany(Subject::class);
+        return $this->belongsTo(Subject::class);
     }
 
     public function student(){
-        return $this->hasMany(Subject::class);
+        return $this->belongsTo(Student::class);
     }
 }

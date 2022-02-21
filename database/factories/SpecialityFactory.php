@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SpecialtyFactory extends Factory
+class SpecialityFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,7 +14,8 @@ class SpecialtyFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->word,
+            'description' => $this->faker->realText(50),
         ];
     }
 }

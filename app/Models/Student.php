@@ -9,6 +9,8 @@ class Student extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $table = 'student';
 
     protected $fillable = [
@@ -30,6 +32,10 @@ class Student extends Model
     ];
 
     public function speciality(){
-        return $this->hasMany(Speciality::class);
+        return $this->hasOne(Speciality::class);
+    }
+
+    public function grade(){
+        return $this->hasMany(Grade::class);
     }
 }

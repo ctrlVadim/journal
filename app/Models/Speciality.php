@@ -9,10 +9,16 @@ class Speciality extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $table = 'speciality';
 
     protected $fillable = [
         'name',
         'description'
     ];
+
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
 }
