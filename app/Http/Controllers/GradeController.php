@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\GradeRequest;
 use App\Models\Grade;
 use App\UserCases\GradeService;
+use Illuminate\Http\JsonResponse;
 
 class GradeController extends Controller
 {
@@ -15,14 +17,19 @@ class GradeController extends Controller
         $this->service = $service;
     }
 
-
-    public function show()
+    /**
+     * @return JsonResponse
+     */
+    public function show() : JsonResponse
     {
         return response()->json(Grade::with(['student', 'subject'])->get(), 200);
     }
 
-
-    public function view(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function view(int $id) : JsonResponse
     {
         if ($grade = Grade::where('id', $id)->first()){
             return response()->json($grade, 200);
@@ -31,8 +38,11 @@ class GradeController extends Controller
         }
     }
 
-
-    public function store(GradeRequest $request)
+    /**
+     * @param GradeRequest $request
+     * @return JsonResponse
+     */
+    public function store(GradeRequest $request) : JsonResponse
     {
         try {
             return response()->json($this->service->create($request), 201);
@@ -41,21 +51,36 @@ class GradeController extends Controller
         }
     }
 
-
-    public function update(GradeRequest $request, Grade $grade)
+    /**
+     * @param GradeRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(GradeRequest $request, int $id) : JsonResponse
     {
         try {
-            return response()->json($this->service->update($request, $grade), 205);
+            if ($grade = Grade::where('id', $id)->first())
+                return response()->json($this->service->update($request, $grade), 205);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
     }
 
-
-    public function remove(Grade $grade)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id) : JsonResponse
     {
         try {
-            return response()->json($this->service->remove($grade), 200);
+            if ($grade = Grade::where('id', $id)->first()){
+                $this->service->remove($grade);
+
+                return response()->json( 'OK', 200);
+            } else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

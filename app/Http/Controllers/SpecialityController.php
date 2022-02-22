@@ -19,7 +19,7 @@ class SpecialityController extends Controller
 
     public function show()
     {
-        return response()->json(Speciality::with(['user', 'subject'])->all(), 200);
+        return response()->json(Speciality::all(), 200);
     }
 
 
@@ -43,20 +43,26 @@ class SpecialityController extends Controller
     }
 
 
-    public function update(SpecialityRequest $request, Speciality $speciality)
+    public function update(SpecialityRequest $request, int $id)
     {
         try {
-            return response()->json($this->service->update($request, $speciality), 205);
+            if ($speciality = Speciality::where('id', $id)->first())
+                return response()->json($this->service->update($speciality), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
     }
 
 
-    public function remove(Speciality $speciality)
+    public function remove(int $id)
     {
         try {
-            return response()->json($this->service->remove($speciality), 200);
+            if ($speciality = Speciality::where('id', $id)->first())
+                return response()->json($this->service->remove($speciality), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

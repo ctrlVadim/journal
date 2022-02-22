@@ -1,11 +1,15 @@
 <template>
     <div>
         <transition name="fade" appear>
-            <div class="modal-overlay" v-if="Object.values(showModal).some(val => val === true)" @click="Object.keys(showModal).forEach(val => showModal[val] = false)"></div>
+            <div class="modal-overlay" v-if="Object.values(modals).some(val => val.visible === true)" @click="Object.keys(modals).forEach(val => modals[val].visible = false)"></div>
         </transition>
         <transition name="fade" appear>
-            <div class="modal-vue delete-modal" v-if="showModal.delete">
-                delete ?
+            <div class="modal-vue delete-modal" v-if="modals.delete.visible">
+                <div class="vue-modal-content">
+                    <h3 class="title">{{modals.delete.title}}</h3>
+                    <button class="btn-cancel" @click="close">Cancel</button>
+                    <button class="red-hover main-button" @click="deleteItem(modals.delete)">Accept</button>
+                </div>
             </div>
         </transition>
     </div>
@@ -16,24 +20,38 @@
     export default {
         name: "Modal",
         props: {
-            showModal: {
+            modals: {
                 type: Object,
                 default: () => ({})
             }
         },
         methods: {
+            deleteItem(){
+                if (this.modals.delete.method === 'POST'){
+                    axios.post(this.modals.delete.url).then(response => {
+                        this.close();
+                    });
+                }else{
+                    axios.get(this.modals.delete.url).then(response => {
+                        this.close();
+                    });
+                }
+            },
             close(){
-                Object.keys(this.$props.showModal).forEach(val => this.$props.showModal[val] = false)
+                Object.keys(this.$props.modals).forEach(val => this.$props.modals[val].visible = false)
             },
             change(modal){
-                Object.keys(this.$props.showModal).forEach(val => this.$props.showModal[val] = false)
-                this.$props.showModal[modal] = true;
+                Object.keys(this.$props.modals).forEach(val => this.$props.modals[val].visible = false)
+                this.$props.modals[modal].visible = true;
             }
         }
     }
 </script>
 
 <style scoped>
+    .vue-modal-content{
+        padding: 20px;
+    }
     .modal-container{
         width: 100%;
         height: 100vh;
@@ -46,7 +64,7 @@
         left: 0;
         right: 0;
         z-index: 99;
-        background: rgba(0, 0, 0, .8);
+        background: rgba(0, 0, 0, .5);
     }
 
     .fade-enter-active,

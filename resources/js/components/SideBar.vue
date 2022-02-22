@@ -41,7 +41,7 @@
         name: "SideBar",
         props: {
 
-            showModal: {
+            modals: {
                 type: Object,
                 default: () => ({})
             },

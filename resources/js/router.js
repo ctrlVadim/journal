@@ -40,8 +40,8 @@ const routes = [
         component: Grade
     },
     {
-        path: '/student/:id',
-        name: 'student.view',
+        path: '/grade/:id',
+        name: 'grade.view',
         component: GradeSingle
     },
     {

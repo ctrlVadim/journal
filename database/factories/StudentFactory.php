@@ -27,7 +27,7 @@ class StudentFactory extends Factory
             'form_of_study' => $this->faker->boolean(),
             'parents' => $this->faker->randomElement(['Нет', 'Отец', 'Мать', 'Отец и мать']),
             'address' => $this->faker->address,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => $this->faker->e164PhoneNumber,
             'passport_data' => $this->faker->numberBetween(1000000000, 9999999999),
             'report_card' => $this->faker->numberBetween(10000000, 99999999),
         ];

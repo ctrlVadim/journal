@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SubjectRequest;
+use App\Models\Student;
 use App\Models\Subject;
 use App\UserCases\SubjectService;
 
@@ -42,20 +43,26 @@ class SubjectController extends Controller
     }
 
 
-    public function update(SubjectRequest $request, Subject $subject)
+    public function update(SubjectRequest $request, int $id)
     {
         try {
-            return response()->json($this->service->update($request, $subject), 205);
+            if ($subject = Subject::where('id', $id)->first())
+                return response()->json($this->service->update($request, $subject), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
     }
 
 
-    public function remove(Subject $subject)
+    public function remove(int $id)
     {
         try {
-            return response()->json($this->service->remove($subject), 200);
+            if ($subject = Subject::where('id', $id)->first())
+                return response()->json($this->service->remove($subject), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

@@ -42,20 +42,26 @@ class StudentController extends Controller
     }
 
 
-    public function update(StudentRequest $request, Student $student)
+    public function update(StudentRequest $request, int $id)
     {
         try {
-            return response()->json($this->service->update($request, $student), 205);
+            if ($student = Student::where('id', $id)->first())
+                return response()->json($this->service->update($request, $student), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
     }
 
 
-    public function remove(Student $student)
+    public function remove(int $id)
     {
         try {
-            return response()->json($this->service->remove($student), 200);
+            if ($student = Student::where('id', $id)->first())
+                return response()->json($this->service->remove($student), 200);
+            else
+                return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

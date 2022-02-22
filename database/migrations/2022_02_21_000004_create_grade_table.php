@@ -14,6 +14,7 @@ class CreateGradeTable extends Migration
     public function up()
     {
         Schema::create('grade', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('student_id')->nullable()->constrained('student')->onDelete('CASCADE');
             $table->foreignId('subject_id')->nullable()->constrained('subject')->onDelete('CASCADE');
             $table->date('date')->nullable();
