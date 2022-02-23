@@ -52,10 +52,10 @@
                         </div>
                     </div>
                 </div>
-                <search/>
+                <search :filterForm="filterForm" @filter="getGrades" />
             </div>
             <div class="left-content">
-                <sort :fields="fields"/>
+                <sort :filterForm="filterForm" :fields="fields" @filter="getGrades"/>
             </div>
         </div>
 
@@ -80,11 +80,11 @@
         },
         data: () => ({
             filterForm: {
-                sort: 0,
-            },
-            searchForm: {
-                field: 'student',
-                find: null,
+                sort_field: '',
+                search: '',
+                search_field: '',
+                sort: 'ASC',
+
             },
             fields: [
                 'student',
@@ -105,8 +105,16 @@
                 };
             },
             getGrades(){
-                axios.get('/api/grade').then(
+                const data = {
+                    sort: this.filterForm.sort,
+                    sort_field: this.filterForm.sort_field,
+                    search: this.filterForm.search,
+                    search_field: this.filterForm.search_field,
+                }
+                console.log(data)
+                axios.post('/api/grade', data).then(
                     response => {
+                        console.log(response)
                         this.grades = response.data;
                     }
                 ).catch(

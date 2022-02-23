@@ -5339,18 +5339,17 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    deleteItem: function deleteItem() {
+    sendRequest: function sendRequest(config) {
       var _this = this;
 
-      if (this.modals["delete"].method === 'POST') {
-        axios.post(this.modals["delete"].url).then(function (response) {
-          _this.close();
-        });
-      } else {
-        axios.get(this.modals["delete"].url).then(function (response) {
-          _this.close();
-        });
-      }
+      axios({
+        method: config.method,
+        url: config.url
+      }).then(function (response) {
+        _this.close();
+
+        _this.$emit(config.event);
+      });
     },
     close: function close() {
       var _this2 = this;
@@ -5397,18 +5396,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Search",
-  data: function data() {
-    return {
-      searchForm: {
-        field: '',
-        find: null
+  props: {
+    filterForm: {
+      type: Object,
+      "default": function _default() {
+        return {};
       }
-    };
+    }
   },
   methods: {
-    search: function search() {}
+    search: function search() {
+      console.log('asd');
+      this.$emit('filter');
+    }
   }
 });
 
@@ -5534,24 +5539,20 @@ __webpack_require__.r(__webpack_exports__);
       "default": function _default() {
         return [];
       }
+    },
+    filterForm: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
     }
   },
   data: function data() {
-    return {
-      sortForm: {
-        field: null,
-        type: 'ASC'
-      }
-    };
+    return {};
   },
   methods: {
     sort: function sort() {},
-    clear: function clear() {
-      this.sortForm = {
-        field: null,
-        sortType: 'ASC'
-      };
-    }
+    clear: function clear() {}
   }
 });
 
@@ -5653,11 +5654,10 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       filterForm: {
-        sort: 0
-      },
-      searchForm: {
-        field: 'student',
-        find: null
+        sort_field: '',
+        search: '',
+        search_field: '',
+        sort: 'ASC'
       },
       fields: ['student', 'subject', 'date', 'grade'],
       grades: []
@@ -5676,7 +5676,15 @@ __webpack_require__.r(__webpack_exports__);
     getGrades: function getGrades() {
       var _this = this;
 
-      axios.get('/api/grade').then(function (response) {
+      var data = {
+        sort: this.filterForm.sort,
+        sort_field: this.filterForm.sort_field,
+        search: this.filterForm.search,
+        search_field: this.filterForm.search_field
+      };
+      console.log(data);
+      axios.post('/api/grade', data).then(function (response) {
+        console.log(response);
         _this.grades = response.data;
       })["catch"](function (error) {
         _this.grades = [];
@@ -11273,7 +11281,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.search-form[data-v-5026ffd3]{\n    width: 100%;\n    margin-top: 20px;\n    height: 40px;\n    display: flex;\n}\n.search-form>*[data-v-5026ffd3]{\n    height: 40px;\n    margin: 0;\n    padding: 0 15px;\n    line-height: 40px;\n    outline: 0;\n    border: 0;\n}\n.search-form input[data-v-5026ffd3]{\n    border-radius: 8px 0 0 8px;\n    background: #263144;\n    color: #fff;\n    flex: 1;\n}\n.search-form select[data-v-5026ffd3]{\n    padding-right: 20px;\n    background: #35455f;\n    color: #fff;\n}\n.search-form button[data-v-5026ffd3]{\n    border-radius: 0 8px 8px 0;\n    display: flex;\n    align-items: center;\n}\n.search-form button i[data-v-5026ffd3]{\n    font-size: 20px;\n    padding: 0;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.search-form__clear[data-v-5026ffd3]{\n    width: 40px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    color: #fff;\n    border-radius: 0;\n    border: 0;\n    font-size: 30px;\n}\n.search-form[data-v-5026ffd3]{\n    width: 100%;\n    margin-top: 20px;\n    height: 40px;\n    display: flex;\n}\n.search-form>*[data-v-5026ffd3]{\n    height: 40px;\n    margin: 0;\n    padding: 0 15px;\n    line-height: 40px;\n    outline: 0;\n    border: 0;\n}\n.search-form input[data-v-5026ffd3]{\n    border-radius: 8px 0 0 8px;\n    background: #263144;\n    color: #fff;\n    flex: 1;\n}\n.search-form select[data-v-5026ffd3]{\n    padding-right: 20px;\n    background: #35455f;\n    color: #fff;\n}\n.search-form button[data-v-5026ffd3]{\n    border-radius: 0 8px 8px 0;\n    display: flex;\n    align-items: center;\n}\n.search-form button i[data-v-5026ffd3]{\n    font-size: 20px;\n    padding: 0;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -31792,7 +31800,7 @@ var render = function () {
                     staticClass: "red-hover main-button",
                     on: {
                       click: function ($event) {
-                        return _vm.deleteItem(_vm.modals.delete)
+                        return _vm.sendRequest(_vm.modals.delete)
                       },
                     },
                   },
@@ -31846,21 +31854,36 @@ var render = function () {
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.searchForm.find,
-            expression: "searchForm.find",
+            value: _vm.filterForm.search,
+            expression: "filterForm.search",
           },
         ],
         attrs: { type: "text", name: "student", placeholder: "Search for..." },
-        domProps: { value: _vm.searchForm.find },
+        domProps: { value: _vm.filterForm.search },
         on: {
           input: function ($event) {
             if ($event.target.composing) {
               return
             }
-            _vm.$set(_vm.searchForm, "find", $event.target.value)
+            _vm.$set(_vm.filterForm, "search", $event.target.value)
           },
         },
       }),
+      _vm._v(" "),
+      _vm.filterForm.search
+        ? _c(
+            "div",
+            {
+              staticClass: "search-form__clear red-hover",
+              on: {
+                click: function ($event) {
+                  _vm.filterForm.search = ""
+                },
+              },
+            },
+            [_c("i", { staticClass: "bx bx-x" })]
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "select",
@@ -31869,8 +31892,8 @@ var render = function () {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.searchForm.field,
-              expression: "searchForm.field",
+              value: _vm.filterForm.search_field,
+              expression: "filterForm.search_field",
             },
           ],
           attrs: { type: "text", name: "student" },
@@ -31885,8 +31908,8 @@ var render = function () {
                   return val
                 })
               _vm.$set(
-                _vm.searchForm,
-                "field",
+                _vm.filterForm,
+                "search_field",
                 $event.target.multiple ? $$selectedVal : $$selectedVal[0]
               )
             },
@@ -31903,7 +31926,7 @@ var render = function () {
           _vm._v(" "),
           _c("option", { attrs: { value: "date" } }, [_vm._v("Date")]),
           _vm._v(" "),
-          _c("option", { attrs: { value: "drade" } }, [_vm._v("Grade")]),
+          _c("option", { attrs: { value: "grade" } }, [_vm._v("Grade")]),
         ]
       ),
       _vm._v(" "),
@@ -32049,7 +32072,11 @@ var render = function () {
         on: {
           submit: function ($event) {
             $event.preventDefault()
-            return _vm.sort.apply(null, arguments)
+            return _vm.$emit("filter")
+          },
+          reset: function ($event) {
+            $event.preventDefault()
+            return _vm.clear.apply(null, arguments)
           },
         },
       },
@@ -32066,8 +32093,8 @@ var render = function () {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.sortForm.field,
-                    expression: "sortForm.field",
+                    value: _vm.filterForm.sort_field,
+                    expression: "filterForm.sort_field",
                   },
                 ],
                 attrs: {
@@ -32077,11 +32104,11 @@ var render = function () {
                 },
                 domProps: {
                   value: field,
-                  checked: _vm._q(_vm.sortForm.field, field),
+                  checked: _vm._q(_vm.filterForm.sort_field, field),
                 },
                 on: {
                   change: function ($event) {
-                    return _vm.$set(_vm.sortForm, "field", field)
+                    return _vm.$set(_vm.filterForm, "sort_field", field)
                   },
                 },
               }),
@@ -32089,7 +32116,7 @@ var render = function () {
               _c(
                 "label",
                 {
-                  class: _vm.sortForm.field === field ? "active" : "",
+                  class: _vm.filterForm.sort_field === field ? "active" : "",
                   attrs: { for: "sort-field__" + field },
                 },
                 [_vm._v(_vm._s(field))]
@@ -32105,8 +32132,8 @@ var render = function () {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.sortForm.type,
-                expression: "sortForm.type",
+                value: _vm.filterForm.sort,
+                expression: "filterForm.sort",
               },
             ],
             staticClass: "radio-input",
@@ -32117,10 +32144,10 @@ var render = function () {
               value: "ASC",
               checked: "",
             },
-            domProps: { checked: _vm._q(_vm.sortForm.type, "ASC") },
+            domProps: { checked: _vm._q(_vm.filterForm.sort, "ASC") },
             on: {
               change: function ($event) {
-                return _vm.$set(_vm.sortForm, "type", "ASC")
+                return _vm.$set(_vm.filterForm, "sort", "ASC")
               },
             },
           }),
@@ -32132,8 +32159,8 @@ var render = function () {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.sortForm.type,
-                expression: "sortForm.type",
+                value: _vm.filterForm.sort,
+                expression: "filterForm.sort",
               },
             ],
             staticClass: "radio-input",
@@ -32143,10 +32170,10 @@ var render = function () {
               name: "hopping",
               value: "DESC",
             },
-            domProps: { checked: _vm._q(_vm.sortForm.type, "DESC") },
+            domProps: { checked: _vm._q(_vm.filterForm.sort, "DESC") },
             on: {
               change: function ($event) {
-                return _vm.$set(_vm.sortForm, "type", "DESC")
+                return _vm.$set(_vm.filterForm, "sort", "DESC")
               },
             },
           }),
@@ -32326,7 +32353,10 @@ var render = function () {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _c("search"),
+          _c("search", {
+            attrs: { filterForm: _vm.filterForm },
+            on: { filter: _vm.getGrades },
+          }),
         ],
         1
       ),
@@ -32334,7 +32364,12 @@ var render = function () {
       _c(
         "div",
         { staticClass: "left-content" },
-        [_c("sort", { attrs: { fields: _vm.fields } })],
+        [
+          _c("sort", {
+            attrs: { filterForm: _vm.filterForm, fields: _vm.fields },
+            on: { filter: _vm.getGrades },
+          }),
+        ],
         1
       ),
     ]),

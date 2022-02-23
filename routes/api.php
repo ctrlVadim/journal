@@ -23,7 +23,7 @@ Route::group(['as' => 'speciality.', 'controller' => SpecialityController::class
 });
 
 Route::group(['as' => 'grade.', 'controller' => GradeController::class], function(){
-    Route::get('/grade', 'show')->name('show');
+    Route::post('/grade', 'show')->name('show');
     Route::get('/grade/{id}', 'view')->name('view');
     Route::post('/grade/create', 'store')->name('store');
     Route::post('/grade/{id}/update', 'update')->name('update');

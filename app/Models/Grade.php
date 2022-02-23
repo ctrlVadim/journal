@@ -20,6 +20,13 @@ class Grade extends Model
         'grade',
     ];
 
+    const SEARCH_FIELDS = [
+        'student',
+        'subject',
+        'date',
+        'grade'
+    ];
+
     public function subject(){
         return $this->belongsTo(Subject::class);
     }

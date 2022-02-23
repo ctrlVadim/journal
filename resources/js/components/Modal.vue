@@ -8,7 +8,7 @@
                 <div class="vue-modal-content">
                     <h3 class="title">{{modals.delete.title}}</h3>
                     <button class="btn-cancel" @click="close">Cancel</button>
-                    <button class="red-hover main-button" @click="deleteItem(modals.delete)">Accept</button>
+                    <button class="red-hover main-button" @click="sendRequest(modals.delete)">Accept</button>
                 </div>
             </div>
         </transition>
@@ -26,16 +26,14 @@
             }
         },
         methods: {
-            deleteItem(){
-                if (this.modals.delete.method === 'POST'){
-                    axios.post(this.modals.delete.url).then(response => {
-                        this.close();
-                    });
-                }else{
-                    axios.get(this.modals.delete.url).then(response => {
-                        this.close();
-                    });
-                }
+            sendRequest(config){
+                axios({
+                    method: config.method,
+                    url: config.url
+                }).then(response => {
+                    this.close();
+                    this.$emit(config.event);
+                });
             },
             close(){
                 Object.keys(this.$props.modals).forEach(val => this.$props.modals[val].visible = false)

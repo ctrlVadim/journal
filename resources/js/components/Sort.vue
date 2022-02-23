@@ -1,17 +1,17 @@
 <template>
     <div class="filter">
-        <form @submit.prevent="sort">
+        <form @submit.prevent="$emit('filter')" @reset.prevent="clear">
             <h3>Select field</h3>
             <div class="fields scroll-box">
                 <div v-for="field in fields" class="sort-field">
-                    <input type="radio" :value="field" :id="'sort-field__' + field" v-model="sortForm.field" name="sort-field__field">
-                    <label :for="'sort-field__' + field" :class="sortForm.field === field ? 'active' : ''">{{field}}</label>
+                    <input type="radio" :value="field" :id="'sort-field__' + field" v-model="filterForm.sort_field" name="sort-field__field">
+                    <label :for="'sort-field__' + field" :class="filterForm.sort_field === field ? 'active' : ''">{{field}}</label>
                 </div>
             </div>
             <div class="sort-type">
-                <input v-model="sortForm.type" id="sort-type__asc" class="radio-input" type="radio" name="hopping" value="ASC" checked>
+                <input v-model="filterForm.sort" id="sort-type__asc" class="radio-input" type="radio" name="hopping" value="ASC" checked>
                 <label for="sort-type__asc" class="radio-label" ><span></span>Sort Ascending <i class='bx bxs-up-arrow' ></i></label>
-                <input v-model="sortForm.type" id="sort-type__desc" class="radio-input"  type="radio" name="hopping" value="DESC">
+                <input v-model="filterForm.sort" id="sort-type__desc" class="radio-input"  type="radio" name="hopping" value="DESC">
                 <label for="sort-type__desc" class="radio-label" ><span></span>Sort Descending <i class='bx bxs-down-arrow' ></i></label>
                 <div class="worm">
                     <div class="worm__segment"></div>
@@ -32,23 +32,20 @@
             fields: {
                 type: Array,
                 default: () => ([]),
+            },
+            filterForm: {
+                type: Object,
+                default: () => ({}),
             }
         },
         data: () => ({
-            sortForm: {
-                field: null,
-                type: 'ASC',
-            }
         }),
         methods: {
             sort(){
 
             },
             clear(){
-                this.sortForm =  {
-                    field: null,
-                    sortType: 'ASC',
-                };
+
             }
         },
     }

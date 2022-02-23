@@ -1,12 +1,15 @@
 <template>
     <form @submit.prevent="search" class="search-form">
-        <input type="text" name="student" v-model="searchForm.find" placeholder="Search for...">
-        <select type="text" name="student" v-model="searchForm.field">
+        <input type="text" name="student" v-model="filterForm.search" placeholder="Search for...">
+        <div class="search-form__clear red-hover" v-if="filterForm.search" @click="filterForm.search = ''">
+            <i class='bx bx-x'></i>
+        </div>
+        <select type="text" name="student" v-model="filterForm.search_field">
             <option value="" selected>Select the field</option>
             <option value="student">Student</option>
             <option value="subject">Subject</option>
             <option value="date">Date</option>
-            <option value="drade">Grade</option>
+            <option value="grade">Grade</option>
         </select>
         <button type="submit" class="red-hover"><i class='bx bx-search-alt' ></i> Search</button>
     </form>
@@ -15,21 +18,32 @@
 <script>
     export default {
         name: "Search",
-        data: () => ({
-            searchForm: {
-                field: '',
-                find: null,
-            },
-        }),
+        props: {
+            filterForm: {
+                type: Object,
+                default: () => ({}),
+            }
+        },
         methods: {
             search(){
-
+                console.log('asd')
+                this.$emit('filter')
             },
         }
     }
 </script>
 
 <style scoped>
+    .search-form__clear{
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        border-radius: 0;
+        border: 0;
+        font-size: 30px;
+    }
     .search-form{
         width: 100%;
         margin-top: 20px;

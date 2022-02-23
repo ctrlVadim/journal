@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\GradeRequest;
+use App\Http\Requests\Search\FilterRequest;
 use App\Models\Grade;
 use App\UserCases\GradeService;
 use Illuminate\Http\JsonResponse;
@@ -17,12 +18,9 @@ class GradeController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function show() : JsonResponse
+    public function show(FilterRequest $request)
     {
-        return response()->json(Grade::with(['student', 'subject'])->get(), 200);
+        return response()->json($this->service->search($request), 200);
     }
 
     /**
