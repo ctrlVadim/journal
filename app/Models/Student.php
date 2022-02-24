@@ -31,6 +31,22 @@ class Student extends Model
         'form_of_study'
     ];
 
+    const SEARCH_FIELDS = [
+        'name',
+        'gender',
+        'birth',
+        'parents',
+        'address',
+        'phone',
+        'passport_data',
+        'report_card',
+        'date_of_admission',
+        'group',
+        'course',
+        'speciality',
+        'form_of_study'
+    ];
+
     public function speciality(){
         return $this->hasOne(Speciality::class);
     }

@@ -12,7 +12,7 @@
                 <div class="vue-table">
                     <div class="vue-table__header">
                         <div class="vue-table__cell" v-for="field in fields">
-                            {{field}}
+                            {{field.replaceAll('_', ' ')}}
                             <i class='bx bxs-upvote'></i>
                             <i class='bx bxs-downvote'></i>
                         </div>
@@ -81,7 +81,7 @@
                 : {
                     sort_field: '',
                     search: '',
-                    search_field: 'date',
+                    search_field: '',
                     sort: 'ASC',
                     date_from: '',
                     date_to: ''

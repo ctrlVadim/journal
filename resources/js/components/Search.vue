@@ -12,7 +12,7 @@
         </div>
         <select :class="filterForm.search_field === 'date' ? 'br-full' : ''" type="text" v-model="filterForm.search_field">
             <option value="" selected>Select the field</option>
-            <option v-for="field in fields" :value="field">{{field}}</option>
+            <option v-for="field in fields" :value="field">{{field.replaceAll('_', ' ')}}</option>
         </select>
         <button type="submit" class="red-hover"><i class='bx bx-search-alt' ></i> Search</button>
     </form>

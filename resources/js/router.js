@@ -1,8 +1,6 @@
 import VueRouter from 'vue-router';
 import Vue from 'vue';
 
-import Index from "./views/Index";
-
 import Student from "./views/Student";
 import StudentSingle from "./views/StudentSingle";
 
@@ -22,11 +20,6 @@ const routes = [
     {
         path: '/',
         name: 'index',
-        component: Index
-    },
-    {
-        path: '/student',
-        name: 'student',
         component: Student
     },
     {

@@ -9,9 +9,9 @@
         </div>
         <ul class="nav_list sidebar_block">
             <li>
-                <router-link to="/student">
+                <router-link to="/">
                     <i class='bx bxs-user-circle' ></i>
-                    <span class="links_name">Students</span>
+                    <span class="links_name">Student</span>
                 </router-link>
             </li>
             <li>
@@ -40,13 +40,10 @@
     export default {
         name: "SideBar",
         props: {
-
             modals: {
                 type: Object,
                 default: () => ({})
             },
-        },
-        created() {
         },
         data: () => ({
             active: localStorage.getItem('sidebar') === 'active' ? 'active' : '',

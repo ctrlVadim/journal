@@ -29,8 +29,8 @@ class SubjectController extends Controller
      */
     public function view(int $id) : JsonResponse
     {
-        if ($grade = Subject::where('id', $id)->first()){
-            return response()->json($grade, 200);
+        if ($subject = Subject::where('id', $id)->first()){
+            return response()->json($subject, 200);
         }else{
             return response()->json('Grade not found', 404);
         }
@@ -57,8 +57,8 @@ class SubjectController extends Controller
     public function update(SubjectRequest $request, int $id) : JsonResponse
     {
         try {
-            if ($grade = Subject::where('id', $id)->first())
-                return response()->json($this->service->update($request, $grade), 205);
+            if ($subject = Subject::where('id', $id)->first())
+                return response()->json($this->service->update($request, $subject), 205);
             else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
@@ -73,8 +73,8 @@ class SubjectController extends Controller
     public function delete(int $id) : JsonResponse
     {
         try {
-            if ($grade = Subject::where('id', $id)->first()){
-                $this->service->remove($grade);
+            if ($subject = Subject::where('id', $id)->first()){
+                $this->service->remove($subject);
 
                 return response()->json( 'OK', 200);
             } else

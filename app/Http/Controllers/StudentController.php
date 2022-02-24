@@ -2,37 +2,48 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Requests\GradeRequest;
+use App\Http\Requests\Search\FilterRequest;
 use App\Http\Requests\StudentRequest;
+use App\Models\Grade;
 use App\Models\Student;
+use App\UserCases\GradeService;
 use App\UserCases\StudentService;
+use Illuminate\Http\JsonResponse;
 
 class StudentController extends Controller
 {
-    public $service;
+    public StudentService $service;
 
     public function __construct(StudentService $service)
     {
         $this->service = $service;
     }
 
-
-    public function show()
+    public function show(FilterRequest $request)
     {
-        return response()->json(Student::with('subject')->all(), 200);
+        return response()->json($this->service->search($request), 200);
     }
 
-
-    public function view(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function view(int $id) : JsonResponse
     {
         if ($student = Student::where('id', $id)->first()){
             return response()->json($student, 200);
         }else{
-            return response()->json('Student not found', 404);
+            return response()->json('Grade not found', 404);
         }
     }
 
-
-    public function store(StudentRequest $request)
+    /**
+     * @param StudentRequest $request
+     * @return JsonResponse
+     */
+    public function store(StudentRequest $request) : JsonResponse
     {
         try {
             return response()->json($this->service->create($request), 201);
@@ -41,12 +52,16 @@ class StudentController extends Controller
         }
     }
 
-
-    public function update(StudentRequest $request, int $id)
+    /**
+     * @param StudentRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(StudentRequest $request, int $id) : JsonResponse
     {
         try {
             if ($student = Student::where('id', $id)->first())
-                return response()->json($this->service->update($request, $student), 200);
+                return response()->json($this->service->update($request, $student), 205);
             else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
@@ -54,13 +69,18 @@ class StudentController extends Controller
         }
     }
 
-
-    public function remove(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id) : JsonResponse
     {
         try {
-            if ($student = Student::where('id', $id)->first())
-                return response()->json($this->service->remove($student), 200);
-            else
+            if ($student = Student::where('id', $id)->first()){
+                $this->service->remove($student);
+
+                return response()->json( 'OK', 200);
+            } else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());

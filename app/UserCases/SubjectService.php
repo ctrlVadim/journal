@@ -21,22 +21,22 @@ class SubjectService
 
     /**
      * @param SubjectRequest $form
-     * @param Subject $speciality
+     * @param Subject $subject
      * @return Subject
      */
-    public function update(SubjectRequest $form, Subject $speciality) : Subject
+    public function update(SubjectRequest $form, Subject $subject) : Subject
     {
-        $speciality->update($form->validated());
+        $subject->update($form->validated());
 
-        return $speciality;
+        return $subject;
     }
 
     /**
-     * @param Subject $speciality
+     * @param Subject $subject
      */
-    public function remove(Subject $speciality) : void
+    public function remove(Subject $subject) : void
     {
-        $speciality->delete();
+        $subject->delete();
     }
 
     /**

@@ -5,7 +5,7 @@
             <div class="fields scroll-box">
                 <div v-for="field in fields" class="sort-field">
                     <input type="radio" :value="field" :id="'sort-field__' + field" v-model="filterForm.sort_field" name="sort-field__field">
-                    <label :for="'sort-field__' + field" :class="filterForm.sort_field === field ? 'active' : ''">{{field}}</label>
+                    <label :for="'sort-field__' + field" :class="filterForm.sort_field === field ? 'active' : ''">{{field.replaceAll('_', ' ')}}</label>
                 </div>
             </div>
             <div class="sort-type">
