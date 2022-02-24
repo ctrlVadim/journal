@@ -1,27 +1,18 @@
 <template>
     <div class="content_container">
-        <h1>Grades table</h1>
+        <div class="d-flex">
+            <h1 class="title-fc">Grades table</h1>
+            <transition name="fade" mode="out-in">
+                <router-link v-if="grades.length > 0" :to="'/grade/' + grades[0].id" class="main-button red-hover a-btn">View as items</router-link>
+            </transition>
+        </div>
+
         <div class="vue-row">
             <div class="main-content">
-                <div class="vue-table" v-if="grades.length > 0">
+                <div class="vue-table">
                     <div class="vue-table__header">
-                        <div class="vue-table__cell">
-                            Student
-                            <i class='bx bxs-upvote'></i>
-                            <i class='bx bxs-downvote'></i>
-                        </div>
-                        <div class="vue-table__cell">
-                            Subject
-                            <i class='bx bxs-upvote'></i>
-                            <i class='bx bxs-downvote'></i>
-                        </div>
-                        <div class="vue-table__cell">
-                            Date
-                            <i class='bx bxs-upvote'></i>
-                            <i class='bx bxs-downvote'></i>
-                        </div>
-                        <div class="vue-table__cell">
-                            Grade
+                        <div class="vue-table__cell" v-for="field in fields">
+                            {{field}}
                             <i class='bx bxs-upvote'></i>
                             <i class='bx bxs-downvote'></i>
                         </div>
@@ -29,7 +20,8 @@
 
                         </div>
                     </div>
-                    <div class="table-scroll scroll-box">
+                    <transition name="fade" mode="out-in">
+                        <div class="table-scroll scroll-box" v-if="grades.length > 0">
                         <div class="vue-table__row" v-for="grade in grades" >
                             <div class="vue-table__cell">
                                 {{ `${grade.student.name} ${grade.student.surname} ${grade.student.patronymic}` }}
@@ -44,14 +36,21 @@
                                 {{ grade.grade }}
                             </div>
                             <div class="vue-table__cell">
-                                <router-link :to="'/grade/update/' + grade.id">
+                                <router-link :to="'/grade/update/' + grade.grade_id">
                                     <i class='bx bxs-message-square-edit' ></i>
                                 </router-link>
                                 <i @click="deleteItem(grade)" class='bx bxs-message-square-x'></i>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </transition>
+                    <transition name="fade" mode="out-in">
+                        <no-matches v-if="showNoMatch"/>
+                    </transition>
+                    <transition name="fade" mode="out-in">
+                        <loader v-if="showLoader"/>
+                    </transition>
+                    </div>
                 <search :filterForm="filterForm" @filter="getGrades" />
             </div>
             <div class="left-content">
@@ -64,13 +63,17 @@
 
 <script>
     import Search from "../components/Search";
+    import Loader from "../components/Loader";
     import Sort from "../components/Sort";
+    import NoMatches from "../components/NoMatches";
 
     export default {
         name: "Grade",
         components:{
+            NoMatches,
             Sort,
-            Search
+            Search,
+            Loader
         },
         props: {
             modals: {
@@ -79,13 +82,18 @@
             }
         },
         data: () => ({
-            filterForm: {
-                sort_field: '',
-                search: '',
-                search_field: '',
-                sort: 'ASC',
-
-            },
+            showNoMatch: false,
+            showLoader: false,
+            filterForm: localStorage.getItem('filterForm')
+                ? JSON.parse(localStorage.getItem('filterForm'))
+                : {
+                    sort_field: '',
+                    search: '',
+                    search_field: 'date',
+                    sort: 'ASC',
+                    date_from: '',
+                    date_to: ''
+                },
             fields: [
                 'student',
                 'subject',
@@ -98,36 +106,44 @@
             deleteItem(grade){
                 this.$props.modals.delete = {
                     visible: true,
-                    url: `/api/grade/${grade.id}/delete`,
+                    url: `/api/grade/${grade.grade_id}/delete`,
                     method: 'POST',
                     title: 'Delete grade?',
                     canUpdate: false
                 };
             },
             getGrades(){
-                const data = {
-                    sort: this.filterForm.sort,
-                    sort_field: this.filterForm.sort_field,
-                    search: this.filterForm.search,
-                    search_field: this.filterForm.search_field,
-                }
-                console.log(data)
-                axios.post('/api/grade', data).then(
-                    response => {
-                        console.log(response)
+                this.showNoMatch = false
+                this.showLoader = true;
+                axios
+                    .post('/api/grade', this.filterForm).then(response => {
                         this.grades = response.data;
-                    }
-                ).catch(
-                    error => {
-                        this.grades = [];
-                    }
-                );
+                        if (this.grades.length === 0) this.showNoMatch = true;
+                        this.showLoader = false;
+                    })
+                    .catch(error => {this.grades = []; this.showNoMatch = true; this.showLoader = false;});
+
             }
         },
         mounted() {
             document.title = 'Grade';
             this.getGrades();
         },
+        watch: {
+            filterForm: {
+                handler(newValue) {localStorage.setItem("filterForm", JSON.stringify(newValue))},
+                deep: true
+            },
+            modals: {
+                handler(newValue) {
+                    if (newValue.delete.canUpdate){
+                        this.getGrades();
+                        this.$props.modals.delete.canUpdate = false;
+                    }
+                },
+                deep: true
+            }
+        }
     }
 </script>
 

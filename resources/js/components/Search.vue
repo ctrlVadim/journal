@@ -1,10 +1,16 @@
 <template>
     <form @submit.prevent="search" class="search-form">
-        <input type="text" name="student" v-model="filterForm.search" placeholder="Search for...">
-        <div class="search-form__clear red-hover" v-if="filterForm.search" @click="filterForm.search = ''">
+        <div class="date-sort__container" v-if="filterForm.search_field === 'date'">
+            <span>From:</span>
+            <date-picker v-model="filterForm.date_from"></date-picker>
+            <span>To:</span>
+            <date-picker v-model="filterForm.date_to"></date-picker>
+        </div>
+        <input v-if="filterForm.search_field !== 'date'" type="text" name="student" v-model="filterForm.search" placeholder="Search for...">
+        <div class="search-form__clear red-hover" v-if="filterForm.search" @click="clear">
             <i class='bx bx-x'></i>
         </div>
-        <select type="text" name="student" v-model="filterForm.search_field">
+        <select :class="filterForm.search_field === 'date' ? 'br-full' : ''" type="text" name="student" v-model="filterForm.search_field">
             <option value="" selected>Select the field</option>
             <option value="student">Student</option>
             <option value="subject">Subject</option>
@@ -16,8 +22,12 @@
 </template>
 
 <script>
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+
     export default {
         name: "Search",
+        components: { DatePicker },
         props: {
             filterForm: {
                 type: Object,
@@ -26,14 +36,22 @@
         },
         methods: {
             search(){
-                console.log('asd')
                 this.$emit('filter')
             },
+            clear(){
+                this.filterForm.search = '';
+                this.$emit('filter')
+            }
         }
     }
 </script>
 
 <style scoped>
+    .date-sort__container{
+        padding: 0 !important;
+        flex: 1;
+    }
+
     .search-form__clear{
         width: 40px;
         display: flex;
@@ -77,5 +95,8 @@
     .search-form button i{
         font-size: 20px;
         padding: 0;
+    }
+    .br-full{
+        border-radius: 8px 0 0 8px;
     }
 </style>

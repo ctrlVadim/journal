@@ -49,11 +49,12 @@
         created() {
         },
         data: () => ({
-            active: '',
+            active: localStorage.getItem('sidebar') === 'active' ? 'active' : '',
         }),
         methods: {
             toggleSideBar(){
                 this.active = this.active === '' ? 'active' : '';
+                localStorage.setItem('sidebar', this.active)
             },
         }
     }

@@ -32,7 +32,7 @@
                     url: config.url
                 }).then(response => {
                     this.close();
-                    this.$emit(config.event);
+                    this.$props.modals.delete.canUpdate = true;
                 });
             },
             close(){

@@ -1,6 +1,6 @@
 <template>
     <div class="filter">
-        <form @submit.prevent="$emit('filter')" @reset.prevent="clear">
+        <form @submit.prevent="$emit('filter')" >
             <h3>Select field</h3>
             <div class="fields scroll-box">
                 <div v-for="field in fields" class="sort-field">
@@ -19,7 +19,7 @@
             </div>
             <div class="button-container">
                 <button type="submit" class="main-button red-hover"><i class='bx bxs-cog' ></i> Sort</button>
-                <button type="reset" class="main-button red-hover"><i class='bx bx-reset' ></i>Reset</button>
+                <button class="main-button red-hover" @click="clear"><i class='bx bx-reset' ></i>Reset</button>
             </div>
         </form>
     </div>
@@ -45,7 +45,8 @@
 
             },
             clear(){
-
+                this.$props.filterForm.sort_field = '';
+                this.$emit('filter')
             }
         },
     }

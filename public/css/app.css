@@ -11615,6 +11615,9 @@ h1{
 .red-hover:hover{
     background: #c23736;
 }
+.red-hover:focus{
+    background: #c23736;
+}
 .vue-row{
     display: flex;
     gap: 20px;
@@ -11665,4 +11668,89 @@ h1{
     background: none;
     transition: all .5s;
 }
+
+.mx-datepicker{
+    padding: 0 !important;
+    margin-right: 20px !important;
+}
+.mx-input{
+    margin-right: 20px;
+    border-radius: 8px !important;
+    background: #263144 !important;
+    color: #fff !important;
+    border: 0 !important;
+    outline: none !important;
+    height: 40px !important;
+    padding: 0 15px;
+}
+.mx-input-wrapper i{
+    color: #fff !important;
+}
+
+.main-content{
+    display: flex;
+    flex-direction: column;
+}
+.vue-table{
+    flex: 1;
+}
+.a-btn{
+    line-height: 40px;
+    text-decoration: none;
+    display: inline-block;
+    color: #fff;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    font-weight: 700;
+}
+.a-btn:hover{
+    color: #fff;
+}
+.title-fc{
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    display: inline-block;
+    height: 40px;
+    margin-right: 10px;
+}
+.mx-datepicker-main.mx-datepicker-popup{
+    background: #35455f;
+    border: none;
+    border-radius: 8px;
+    font-family: "Nunito", sans-serif;
+}
+.mx-calendar-content .cell{
+    border-radius: 8px !important;
+}
+.mx-calendar-content .cell.active{
+    background: #EE4443 !important;
+    font-weight: 700 !important;
+}
+.mx-table-date .today{
+    color: #EE4443 !important;
+}
+.mx-btn:hover{
+    border: none !important;
+    color: #EE4443 !important;
+}
+.mx-calendar-content .cell{
+    transition: ease .2s !important;
+}
+.mx-table-date .cell:not(.not-current-month){
+    color: #fff !important;
+}
+.mx-calendar-content .cell:hover{
+    font-weight: 700 !important;
+    color: #EE4443 !important;
+    background: #121c2b !important;
+}
+.mx-table-date .cell.not-current-month{
+    color: #aaa !important;
+}
+.vue-table__cell:first-letter{
+    text-transform: capitalize;
+}
+
 

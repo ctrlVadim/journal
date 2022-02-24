@@ -2,10 +2,7 @@
     <div>
         <side-bar :modals="modals"/>
         <div class="content">
-            <transition
-                name="fade"
-                mode="out-in"
-            >
+            <transition name="fade" mode="out-in">
                 <router-view :modals="modals" />
             </transition>
         </div>
@@ -16,12 +13,13 @@
 <script>
     import SideBar from "./components/SideBar";
     import Modal from "./components/Modal";
+
     export default {
         name: "App",
         components: {SideBar, Modal},
         data: () => ({
             modals  : {
-                delete: false,
+                delete: {},
             },
         }),
         created() {
