@@ -3,37 +3,47 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\GradeRequest;
+use App\Http\Requests\Search\FilterRequest;
 use App\Http\Requests\SpecialityRequest;
+use App\Models\Grade;
 use App\Models\Speciality;
+use App\UserCases\GradeService;
 use App\UserCases\SpecialityService;
+use Illuminate\Http\JsonResponse;
 
 class SpecialityController extends Controller
 {
-    public $service;
+    public SpecialityService $service;
 
     public function __construct(SpecialityService $service)
     {
         $this->service = $service;
     }
 
-
-    public function show()
+    public function show(FilterRequest $request)
     {
-        return response()->json(Speciality::all(), 200);
+        return response()->json($this->service->search($request), 200);
     }
 
-
-    public function view(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function view(int $id) : JsonResponse
     {
-        if ($speciality = Speciality::where('id', $id)->first()){
-            return response()->json($speciality, 200);
+        if ($grade = Speciality::where('id', $id)->first()){
+            return response()->json($grade, 200);
         }else{
             return response()->json('Grade not found', 404);
         }
     }
 
-
-    public function store(SpecialityRequest $request)
+    /**
+     * @param SpecialityRequest $request
+     * @return JsonResponse
+     */
+    public function store(SpecialityRequest $request) : JsonResponse
     {
         try {
             return response()->json($this->service->create($request), 201);
@@ -42,12 +52,16 @@ class SpecialityController extends Controller
         }
     }
 
-
-    public function update(SpecialityRequest $request, int $id)
+    /**
+     * @param SpecialityRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(SpecialityRequest $request, int $id) : JsonResponse
     {
         try {
-            if ($speciality = Speciality::where('id', $id)->first())
-                return response()->json($this->service->update($speciality), 200);
+            if ($grade = Speciality::where('id', $id)->first())
+                return response()->json($this->service->update($request, $grade), 205);
             else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
@@ -55,13 +69,18 @@ class SpecialityController extends Controller
         }
     }
 
-
-    public function remove(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id) : JsonResponse
     {
         try {
-            if ($speciality = Speciality::where('id', $id)->first())
-                return response()->json($this->service->remove($speciality), 200);
-            else
+            if ($grade = Speciality::where('id', $id)->first()){
+                $this->service->remove($grade);
+
+                return response()->json( 'OK', 200);
+            } else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());

@@ -2,38 +2,45 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Requests\Search\FilterRequest;
 use App\Http\Requests\SubjectRequest;
-use App\Models\Student;
 use App\Models\Subject;
 use App\UserCases\SubjectService;
+use Illuminate\Http\JsonResponse;
 
 class SubjectController extends Controller
 {
-    public $service;
+    public SubjectService $service;
 
     public function __construct(SubjectService $service)
     {
         $this->service = $service;
     }
 
-
-    public function show()
+    public function show(FilterRequest $request)
     {
-        return response()->json(Subject::with(['user', 'subject'])->all(), 200);
+        return response()->json($this->service->search($request), 200);
     }
 
-
-    public function view(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function view(int $id) : JsonResponse
     {
-        if ($subject = Subject::where('id', $id)->first()){
-            return response()->json($subject, 200);
+        if ($grade = Subject::where('id', $id)->first()){
+            return response()->json($grade, 200);
         }else{
             return response()->json('Grade not found', 404);
         }
     }
 
-
-    public function store(SubjectRequest $request)
+    /**
+     * @param SubjectRequest $request
+     * @return JsonResponse
+     */
+    public function store(SubjectRequest $request) : JsonResponse
     {
         try {
             return response()->json($this->service->create($request), 201);
@@ -42,12 +49,16 @@ class SubjectController extends Controller
         }
     }
 
-
-    public function update(SubjectRequest $request, int $id)
+    /**
+     * @param SubjectRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(SubjectRequest $request, int $id) : JsonResponse
     {
         try {
-            if ($subject = Subject::where('id', $id)->first())
-                return response()->json($this->service->update($request, $subject), 200);
+            if ($grade = Subject::where('id', $id)->first())
+                return response()->json($this->service->update($request, $grade), 205);
             else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
@@ -55,13 +66,18 @@ class SubjectController extends Controller
         }
     }
 
-
-    public function remove(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id) : JsonResponse
     {
         try {
-            if ($subject = Subject::where('id', $id)->first())
-                return response()->json($this->service->remove($subject), 200);
-            else
+            if ($grade = Subject::where('id', $id)->first()){
+                $this->service->remove($grade);
+
+                return response()->json( 'OK', 200);
+            } else
                 return response()->json('Not found', 404);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());

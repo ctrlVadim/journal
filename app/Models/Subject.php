@@ -18,6 +18,11 @@ class Subject extends Model
         'description'
     ];
 
+    const SEARCH_FIELDS = [
+        'name',
+        'description'
+    ];
+
     public function subject(){
         return $this->hasMany(Subject::class);
     }

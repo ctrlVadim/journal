@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 
 class GradeController extends Controller
 {
-    public $service;
+    public GradeService $service;
 
     public function __construct(GradeService $service)
     {

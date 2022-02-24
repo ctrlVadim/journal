@@ -18,6 +18,11 @@ class Speciality extends Model
         'description'
     ];
 
+    const SEARCH_FIELDS = [
+        'name',
+        'description'
+    ];
+
     public function student(){
         return $this->belongsTo(Student::class);
     }

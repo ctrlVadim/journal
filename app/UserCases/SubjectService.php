@@ -1,33 +1,68 @@
 <?php
 
-
 namespace App\UserCases;
 
 
-use App\Http\Requests\StudentRequest;
 use App\Http\Requests\SubjectRequest;
-use App\Models\Student;
+use App\Http\Requests\Search\FilterRequest;
 use App\Models\Subject;
-use phpDocumentor\Reflection\Types\Void_;
+use Illuminate\Database\Eloquent\Collection;
 
 class SubjectService
 {
-    public function store(SubjectRequest $request) : Subject
+    /**
+     * @param SubjectRequest $form
+     * @return Subject
+     */
+    public function store(SubjectRequest $form) : Subject
     {
-        return Student::create($request->validated());
+        return Subject::create($form->validated());
     }
 
-
-    public function update(SubjectRequest $request, Subject $subject) : Subject
+    /**
+     * @param SubjectRequest $form
+     * @param Subject $speciality
+     * @return Subject
+     */
+    public function update(SubjectRequest $form, Subject $speciality) : Subject
     {
-        $subject->update($request->validated());
+        $speciality->update($form->validated());
 
-        return $subject;
+        return $speciality;
     }
 
-
-    public function remove(Subject $subject) : Void_
+    /**
+     * @param Subject $speciality
+     */
+    public function remove(Subject $speciality) : void
     {
-        $subject->delete();
+        $speciality->delete();
+    }
+
+    /**
+     * @param FilterRequest|null $filter
+     * @return Collection
+     */
+    public function search(FilterRequest $filter = null) : Collection
+    {
+        $query = Subject::where('id', '>', 0);
+
+        if (isset($filter)){
+            if (
+                isset($filter['search']) && $filter['search']
+                && (
+                    isset($filter['search_field'])
+                    && in_array($filter['search_field'], Subject::SEARCH_FIELDS)
+                )){
+                $query->where($filter['search_field'], 'like', "%".$filter['search']."%");
+            }
+
+            if (isset($filter['sort']) && in_array($filter['sort'], ['ASC', 'DESC'])
+                && isset($filter['sort_field'])
+                && in_array($filter['sort_field'], Subject::SEARCH_FIELDS)){
+                $query->orderBy($filter['sort_field'], $filter['sort']);
+            }
+        }
+        return $query->get();
     }
 }

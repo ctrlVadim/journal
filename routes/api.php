@@ -15,13 +15,12 @@ Route::group(['as' => 'student.', 'controller' => StudentController::class], fun
 });
 
 Route::group(['as' => 'speciality.', 'controller' => SpecialityController::class], function(){
-    Route::get('/speciality', 'show')->name('show');
+    Route::post('/speciality', 'show')->name('show');
     Route::get('/speciality/{id}', 'view')->name('view');
     Route::post('/speciality/create', 'store')->name('store');
     Route::post('/speciality/{id}/update', 'update')->name('update');
     Route::post('/speciality/{id}/delete', 'delete')->name('delete');
 });
-
 Route::group(['as' => 'grade.', 'controller' => GradeController::class], function(){
     Route::post('/grade', 'show')->name('show');
     Route::get('/grade/{id}', 'view')->name('view');
@@ -29,9 +28,8 @@ Route::group(['as' => 'grade.', 'controller' => GradeController::class], functio
     Route::post('/grade/{id}/update', 'update')->name('update');
     Route::post('/grade/{id}/delete', 'delete')->name('delete');
 });
-
 Route::group(['as' => 'subject.', 'controller' => SubjectController::class], function(){
-    Route::get('/subject', 'show')->name('show');
+    Route::post('/subject', 'show')->name('show');
     Route::get('/subject/{id}', 'view')->name('view');
     Route::post('/subject/create', 'store')->name('store');
     Route::post('/subject/{id}/update', 'update')->name('update');

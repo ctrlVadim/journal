@@ -10,12 +10,9 @@
         <div class="search-form__clear red-hover" v-if="filterForm.search" @click="clear">
             <i class='bx bx-x'></i>
         </div>
-        <select :class="filterForm.search_field === 'date' ? 'br-full' : ''" type="text" name="student" v-model="filterForm.search_field">
+        <select :class="filterForm.search_field === 'date' ? 'br-full' : ''" type="text" v-model="filterForm.search_field">
             <option value="" selected>Select the field</option>
-            <option value="student">Student</option>
-            <option value="subject">Subject</option>
-            <option value="date">Date</option>
-            <option value="grade">Grade</option>
+            <option v-for="field in fields" :value="field">{{field}}</option>
         </select>
         <button type="submit" class="red-hover"><i class='bx bx-search-alt' ></i> Search</button>
     </form>
@@ -32,6 +29,10 @@
             filterForm: {
                 type: Object,
                 default: () => ({}),
+            },
+            fields: {
+                type: Array,
+                default: () => ([]),
             }
         },
         methods: {
@@ -95,6 +96,9 @@
     .search-form button i{
         font-size: 20px;
         padding: 0;
+    }
+    .search-form select, .search-form option{
+        text-transform: capitalize;
     }
     .br-full{
         border-radius: 8px 0 0 8px;

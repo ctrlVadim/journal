@@ -51,10 +51,10 @@
                         <loader v-if="showLoader"/>
                     </transition>
                     </div>
-                <search :filterForm="filterForm" @filter="getGrades" />
+                <search :filterForm="filterForm" :fields="fields" @filter="getData" />
             </div>
             <div class="left-content">
-                <sort :filterForm="filterForm" :fields="fields" @filter="getGrades"/>
+                <sort :filterForm="filterForm" :fields="fields" @filter="getData"/>
             </div>
         </div>
 
@@ -84,8 +84,8 @@
         data: () => ({
             showNoMatch: false,
             showLoader: false,
-            filterForm: localStorage.getItem('filterForm')
-                ? JSON.parse(localStorage.getItem('filterForm'))
+            filterForm: localStorage.getItem('filterFormGrade')
+                ? JSON.parse(localStorage.getItem('filterFormGrade'))
                 : {
                     sort_field: '',
                     search: '',
@@ -112,7 +112,7 @@
                     canUpdate: false
                 };
             },
-            getGrades(){
+            getData(){
                 this.showNoMatch = false
                 this.showLoader = true;
                 axios
@@ -127,17 +127,17 @@
         },
         mounted() {
             document.title = 'Grade';
-            this.getGrades();
+            this.getData();
         },
         watch: {
             filterForm: {
-                handler(newValue) {localStorage.setItem("filterForm", JSON.stringify(newValue))},
+                handler(newValue) {localStorage.setItem("filterFormGrade", JSON.stringify(newValue))},
                 deep: true
             },
             modals: {
                 handler(newValue) {
                     if (newValue.delete.canUpdate){
-                        this.getGrades();
+                        this.getData();
                         this.$props.modals.delete.canUpdate = false;
                     }
                 },
