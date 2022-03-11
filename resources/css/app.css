@@ -287,22 +287,28 @@ h1{
     border-radius: 12px;
 }
 .red-hover{
-    background: #EE4443;
+    background: #c63a39;
     transition: ease .2s;
     color: #fff;
 }
-.red-hover:hover{
-    background: #c23736;
+.red-hover:hover, .red-hover:focus{
+    background: #a53130 !important;
 }
-.red-hover:focus{
-    background: #c23736;
+.blue-hover{
+    background: #3b44ee;
+    transition: ease .2s;
+    color: #fff;
+}
+.blue-hover:hover, .blue-hover:focus{
+    background: #363dc4 !important;
 }
 .vue-row{
     display: flex;
     gap: 20px;
 }
 .vue-row .main-content{
-    flex: 700px;
+    flex: 1100px;
+    max-width: 1100px;
 }
 .vue-row .left-content{
     flex: 1;
@@ -311,14 +317,19 @@ h1{
     overflow: hidden;
     overflow-y: auto
 }
-
+.scroll-box.scroll-horizontal{
+    overflow-x: auto;
+    overflow-y: hidden;
+}
 .scroll-box::-webkit-scrollbar {
-    width: 5px
+    width: 5px;
+    height: 5px;
+    cursor: pointer;
 }
 
 .scroll-box::-webkit-scrollbar-track {
     background: rgba(196, 196, 196, .1);
-    width: 1px
+    width: 1px2
 }
 
 .scroll-box::-webkit-scrollbar-thumb {
@@ -428,3 +439,6 @@ h1{
     text-transform: capitalize;
 }
 
+button:disabled{
+    opacity: .4;
+}

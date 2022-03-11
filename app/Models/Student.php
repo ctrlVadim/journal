@@ -48,7 +48,7 @@ class Student extends Model
     ];
 
     public function speciality(){
-        return $this->hasOne(Speciality::class);
+        return $this->belongsTo(Speciality::class);
     }
 
     public function grade(){

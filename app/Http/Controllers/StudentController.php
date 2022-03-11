@@ -30,15 +30,19 @@ class StudentController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function view(int $id) : JsonResponse
+    public function view() : JsonResponse
     {
-        if ($student = Student::where('id', $id)->first()){
-            return response()->json($student, 200);
-        }else{
-            return response()->json('Grade not found', 404);
-        }
+        $student = Student::paginate(1);
+        return response()->json($student, 200);
     }
 
+    public function item(int $id)
+    {
+        if ($student = Student::where('id', $id)->first())
+            return response()->json($student, 200);
+        else
+            return response()->json('Not found', 404);
+    }
     /**
      * @param StudentRequest $request
      * @return JsonResponse
@@ -46,7 +50,7 @@ class StudentController extends Controller
     public function store(StudentRequest $request) : JsonResponse
     {
         try {
-            return response()->json($this->service->create($request), 201);
+            return response()->json($this->service->store($request), 201);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

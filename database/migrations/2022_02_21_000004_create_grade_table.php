@@ -17,7 +17,7 @@ class CreateGradeTable extends Migration
             $table->id();
             $table->foreignId('student_id')->nullable()->constrained('student')->onDelete('CASCADE');
             $table->foreignId('subject_id')->nullable()->constrained('subject')->onDelete('CASCADE');
-            $table->date('date')->nullable();
+            $table->timestamp('date')->nullable();
             $table->enum('grade', [1, 2, 3, 4, 5])->nullable();
         });
     }

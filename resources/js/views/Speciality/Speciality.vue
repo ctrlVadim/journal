@@ -1,12 +1,12 @@
 <template>
     <div class="content_container">
-        <div class="d-flex">
-            <h1 class="title-fc">Grades table</h1>
+        <div class="d-flex gap-4    ">
+            <h1 class="title-fc">Specialities table</h1>
             <transition name="fade" mode="out-in">
-                <router-link v-if="grades.length > 0" :to="'/grade/' + grades[0].id" class="main-button red-hover a-btn">View as items</router-link>
+                <router-link v-if="specialities.length > 0" :to="'/speciality/view'" class="main-button red-hover a-btn">View as items</router-link>
             </transition>
+            <router-link :to="'/speciality/create'" class="main-button red-hover a-btn">Add new</router-link>
         </div>
-
         <div class="vue-row">
             <div class="main-content">
                 <div class="vue-table">
@@ -16,33 +16,25 @@
                             <i class='bx bxs-upvote'></i>
                             <i class='bx bxs-downvote'></i>
                         </div>
-                        <div class="vue-table__cell">
-
-                        </div>
+                        <div class="vue-table__cell"></div>
                     </div>
                     <transition name="fade" mode="out-in">
-                        <div class="table-scroll scroll-box" v-if="grades.length > 0">
-                        <div class="vue-table__row" v-for="grade in grades" >
-                            <div class="vue-table__cell">
-                                {{ `${grade.student.name} ${grade.student.surname} ${grade.student.patronymic}` }}
-                            </div>
-                            <div class="vue-table__cell">
-                                {{ grade.subject.name }}
-                            </div>
-                            <div class="vue-table__cell">
-                                {{ grade.date }}
-                            </div>
-                            <div class="vue-table__cell">
-                                {{ grade.grade }}
-                            </div>
-                            <div class="vue-table__cell">
-                                <router-link :to="'/grade/update/' + grade.grade_id">
-                                    <i class='bx bxs-message-square-edit' ></i>
-                                </router-link>
-                                <i @click="deleteItem(grade)" class='bx bxs-message-square-x'></i>
+                        <div class="table-scroll scroll-box" v-if="specialities.length > 0">
+                            <div class="vue-table__row" v-for="speciality in specialities" >
+                                <div class="vue-table__cell">
+                                    {{ speciality.name }}
+                                </div>
+                                <div class="vue-table__cell">
+                                    {{ speciality.description }}
+                                </div>
+                                <div class="vue-table__cell">
+                                    <router-link :to="`/speciality/${speciality.id}/update/`">
+                                        <i class='bx bxs-message-square-edit' ></i>
+                                    </router-link>
+                                    <i @click="deleteItem(speciality)" class='bx bxs-message-square-x'></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </transition>
                     <transition name="fade" mode="out-in">
                         <no-matches v-if="showNoMatch"/>
@@ -50,25 +42,24 @@
                     <transition name="fade" mode="out-in">
                         <loader v-if="showLoader"/>
                     </transition>
-                    </div>
+                </div>
                 <search :filterForm="filterForm" :fields="fields" @filter="getData" />
             </div>
             <div class="left-content">
                 <sort :filterForm="filterForm" :fields="fields" @filter="getData"/>
             </div>
         </div>
-
     </div>
 </template>
 
 <script>
-    import Search from "../components/Search";
-    import Loader from "../components/Loader";
-    import Sort from "../components/Sort";
-    import NoMatches from "../components/NoMatches";
+    import Search from "../../components/Search";
+    import Loader from "../../components/Loader";
+    import Sort from "../../components/Sort";
+    import NoMatches from "../../components/NoMatches";
 
     export default {
-        name: "Grade",
+        name: "Speciality",
         components:{
             NoMatches,
             Sort,
@@ -84,8 +75,8 @@
         data: () => ({
             showNoMatch: false,
             showLoader: false,
-            filterForm: localStorage.getItem('filterFormGrade')
-                ? JSON.parse(localStorage.getItem('filterFormGrade'))
+            filterForm: localStorage.getItem('filterFormSpec')
+                ? JSON.parse(localStorage.getItem('filterFormSpec'))
                 : {
                     sort_field: '',
                     search: '',
@@ -95,20 +86,18 @@
                     date_to: ''
                 },
             fields: [
-                'student',
-                'subject',
-                'date',
-                'grade'
+                'name',
+                'description'
             ],
-            grades: [],
+            specialities: [],
         }),
         methods:{
-            deleteItem(grade){
+            deleteItem(speciality){
                 this.$props.modals.delete = {
                     visible: true,
-                    url: `/api/grade/${grade.grade_id}/delete`,
+                    url: `/api/speciality/${speciality.id}/delete`,
                     method: 'POST',
-                    title: 'Delete grade?',
+                    title: 'Delete speciality?',
                     canUpdate: false
                 };
             },
@@ -116,22 +105,22 @@
                 this.showNoMatch = false
                 this.showLoader = true;
                 axios
-                    .post('/api/grade', this.filterForm).then(response => {
-                        this.grades = response.data;
-                        if (this.grades.length === 0) this.showNoMatch = true;
-                        this.showLoader = false;
-                    })
+                    .post('/api/speciality', this.filterForm).then(response => {
+                    this.specialities = response.data;
+                    if (this.specialities.length === 0) this.showNoMatch = true;
+                    this.showLoader = false;
+                })
                     .catch(error => {this.grades = []; this.showNoMatch = true; this.showLoader = false;});
 
             }
         },
         mounted() {
-            document.title = 'Grade';
+            document.title = 'Speciality';
             this.getData();
         },
         watch: {
             filterForm: {
-                handler(newValue) {localStorage.setItem("filterFormGrade", JSON.stringify(newValue))},
+                handler(newValue) {localStorage.setItem("filterFormSpec", JSON.stringify(newValue))},
                 deep: true
             },
             modals: {
@@ -148,7 +137,10 @@
 </script>
 
 <style scoped>
-    .vue-table__cell{
-        flex: 1 0 22.5%;
+    .vue-table__cell:first-child{
+        flex: 1 0 20%;
+    }
+    .vue-table__cell:nth-child(2){
+        flex: 1 0 65%;
     }
 </style>

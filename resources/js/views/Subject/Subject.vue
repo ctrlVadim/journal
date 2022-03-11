@@ -1,12 +1,12 @@
 <template>
     <div class="content_container">
-        <div class="d-flex">
+        <div class="d-flex gap-4">
             <h1 class="title-fc">Subjects table</h1>
             <transition name="fade" mode="out-in">
-                <router-link v-if="subjects.length > 0" :to="'/subject/' + subjects[0].id" class="main-button red-hover a-btn">View as items</router-link>
+                <router-link v-if="subjects.length > 0" :to="'/subject/view'" class="main-button red-hover a-btn">View as items</router-link>
             </transition>
+            <router-link :to="'/subject/create'" class="main-button red-hover a-btn">Add new</router-link>
         </div>
-
         <div class="vue-row">
             <div class="main-content">
                 <div class="vue-table">
@@ -29,7 +29,7 @@
                                     {{ subject.description }}
                                 </div>
                                 <div class="vue-table__cell">
-                                    <router-link :to="'/subject/update/' + subject.id">
+                                    <router-link :to="`/subject/${subject.id}/update/`">
                                         <i class='bx bxs-message-square-edit' ></i>
                                     </router-link>
                                     <i @click="deleteItem(subject)" class='bx bxs-message-square-x'></i>
@@ -54,10 +54,10 @@
 </template>
 
 <script>
-    import Search from "../components/Search";
-    import Loader from "../components/Loader";
-    import Sort from "../components/Sort";
-    import NoMatches from "../components/NoMatches";
+    import Search from "../../components/Search";
+    import Loader from "../../components/Loader";
+    import Sort from "../../components/Sort";
+    import NoMatches from "../../components/NoMatches";
 
     export default {
         name: "Subject",
@@ -93,10 +93,10 @@
             subjects: [],
         }),
         methods:{
-            deleteItem(grade){
+            deleteItem(subject){
                 this.$props.modals.delete = {
                     visible: true,
-                    url: `/api/subject/${grade.grade_id}/delete`,
+                    url: `/api/subject/${subject.id}/delete`,
                     method: 'POST',
                     title: 'Delete subject?',
                     canUpdate: false

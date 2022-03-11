@@ -23,17 +23,23 @@ class SubjectController extends Controller
         return response()->json($this->service->search($request), 200);
     }
 
+
     /**
      * @param int $id
      * @return JsonResponse
      */
-    public function view(int $id) : JsonResponse
+    public function view() : JsonResponse
     {
-        if ($subject = Subject::where('id', $id)->first()){
+        $subject = Subject::paginate(1);
+        return response()->json($subject, 200);
+    }
+
+    public function item(int $id)
+    {
+        if ($subject = Subject::where('id', $id)->first())
             return response()->json($subject, 200);
-        }else{
-            return response()->json('Grade not found', 404);
-        }
+        else
+            return response()->json('Not found', 404);
     }
 
     /**
@@ -43,7 +49,7 @@ class SubjectController extends Controller
     public function store(SubjectRequest $request) : JsonResponse
     {
         try {
-            return response()->json($this->service->create($request), 201);
+            return response()->json($this->service->store($request), 201);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }

@@ -27,13 +27,18 @@ class GradeController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function view(int $id) : JsonResponse
+    public function view() : JsonResponse
     {
-        if ($grade = Grade::where('id', $id)->first()){
+        $grade = Grade::paginate(1);
+        return response()->json($grade, 200);
+    }
+
+    public function item(int $id)
+    {
+        if ($grade = Grade::where('id', $id)->first())
             return response()->json($grade, 200);
-        }else{
-            return response()->json('Grade not found', 404);
-        }
+        else
+            return response()->json('Not found', 404);
     }
 
     /**
@@ -43,7 +48,8 @@ class GradeController extends Controller
     public function store(GradeRequest $request) : JsonResponse
     {
         try {
-            return response()->json($this->service->create($request), 201);
+            $request['date'] = date('Y-d-m', strtotime($request['date']));
+            return response()->json($this->service->store($request), 201);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
@@ -56,6 +62,7 @@ class GradeController extends Controller
      */
     public function update(GradeRequest $request, int $id) : JsonResponse
     {
+        $request['date'] = date('Y-d-m', strtotime($request['date']));
         try {
             if ($grade = Grade::where('id', $id)->first())
                 return response()->json($this->service->update($request, $grade), 205);

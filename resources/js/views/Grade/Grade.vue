@@ -1,36 +1,48 @@
 <template>
     <div class="content_container">
-        <div class="d-flex">
-            <h1 class="title-fc">Subjects table</h1>
+        <div class="d-flex gap-4">
+            <h1 class="title-fc">Grades table</h1>
             <transition name="fade" mode="out-in">
-                <router-link v-if="students.length > 0" :to="'/student/' + students[0].id" class="main-button red-hover a-btn">View as items</router-link>
+                <router-link v-if="grades.length > 0" :to="'/grade/view'" class="main-button red-hover a-btn">View as items</router-link>
             </transition>
+            <router-link :to="'/grade/create'" class="main-button red-hover a-btn">Add new</router-link>
         </div>
-
         <div class="vue-row">
             <div class="main-content">
                 <div class="vue-table">
                     <div class="vue-table__header">
                         <div class="vue-table__cell" v-for="field in fields">
-                            {{field !== 'gender' ? field.replaceAll('_', ' ') : ''}}
+                            {{field.replaceAll('_', ' ')}}
                             <i class='bx bxs-upvote'></i>
                             <i class='bx bxs-downvote'></i>
                         </div>
                         <div class="vue-table__cell">
+
                         </div>
                     </div>
                     <transition name="fade" mode="out-in">
-                        <div class="table-scroll scroll-box" v-if="students.length > 0">
-                            <div class="vue-table__row" v-for="student in students" >
-
-                                <div class="vue-table__cell">
-                                    <router-link :to="'/student/update/' + student.id">
-                                        <i class='bx bxs-message-square-edit' ></i>
-                                    </router-link>
-                                    <i @click="deleteItem(student)" class='bx bxs-message-square-x'></i>
-                                </div>
+                        <div class="table-scroll scroll-box" v-if="grades.length > 0">
+                        <div class="vue-table__row" v-for="grade in grades" >
+                            <div class="vue-table__cell">
+                                {{ `${grade.student.name} ${grade.student.surname} ${grade.student.patronymic}` }}
+                            </div>
+                            <div class="vue-table__cell">
+                                {{ grade.subject.name }}
+                            </div>
+                            <div class="vue-table__cell">
+                                {{ grade.date }}
+                            </div>
+                            <div class="vue-table__cell">
+                                {{ grade.grade }}
+                            </div>
+                            <div class="vue-table__cell">
+                                <router-link :to="`/grade/${grade.grade_id}/update`">
+                                    <i class='bx bxs-message-square-edit' ></i>
+                                </router-link>
+                                <i @click="deleteItem(grade)" class='bx bxs-message-square-x'></i>
                             </div>
                         </div>
+                    </div>
                     </transition>
                     <transition name="fade" mode="out-in">
                         <no-matches v-if="showNoMatch"/>
@@ -38,24 +50,25 @@
                     <transition name="fade" mode="out-in">
                         <loader v-if="showLoader"/>
                     </transition>
-                </div>
-                <search :filterForm="filterForm" :fields="fields" @filter="getData" />
+                    </div>
+                <search :filterForm="filterForm" :dateFields="['date']" :fields="fields" @filter="getData" />
             </div>
             <div class="left-content">
                 <sort :filterForm="filterForm" :fields="fields" @filter="getData"/>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
-    import Search from "../components/Search";
-    import Loader from "../components/Loader";
-    import Sort from "../components/Sort";
-    import NoMatches from "../components/NoMatches";
+    import Search from "../../components/Search";
+    import Loader from "../../components/Loader";
+    import Sort from "../../components/Sort";
+    import NoMatches from "../../components/NoMatches";
 
     export default {
-        name: "Subject",
+        name: "Grade",
         components:{
             NoMatches,
             Sort,
@@ -71,8 +84,8 @@
         data: () => ({
             showNoMatch: false,
             showLoader: false,
-            filterForm: localStorage.getItem('filterFormStudent')
-                ? JSON.parse(localStorage.getItem('filterFormStudent'))
+            filterForm: localStorage.getItem('filterFormGrade')
+                ? JSON.parse(localStorage.getItem('filterFormGrade'))
                 : {
                     sort_field: '',
                     search: '',
@@ -82,29 +95,20 @@
                     date_to: ''
                 },
             fields: [
-                'name',
-                'gender',
-                'birth',
-                'parents',
-                'address',
-                'phone',
-                'passport_data',
-                'report_card',
-                'date_of_admission',
-                'group',
-                'course',
-                'speciality',
-                'form_of_study'
+                'student',
+                'subject',
+                'date',
+                'grade'
             ],
-            students: [],
+            grades: [],
         }),
         methods:{
             deleteItem(grade){
                 this.$props.modals.delete = {
                     visible: true,
-                    url: `/api/student/${grade.grade_id}/delete`,
+                    url: `/api/grade/${grade.grade_id}/delete`,
                     method: 'POST',
-                    title: 'Delete student?',
+                    title: 'Delete grade?',
                     canUpdate: false
                 };
             },
@@ -112,22 +116,22 @@
                 this.showNoMatch = false
                 this.showLoader = true;
                 axios
-                    .post('/api/student', this.filterForm).then(response => {
-                    this.students = response.data;
-                    if (this.students.length === 0) this.showNoMatch = true;
-                    this.showLoader = false;
-                })
+                    .post('/api/grade', this.filterForm).then(response => {
+                        this.grades = response.data;
+                        if (this.grades.length === 0) this.showNoMatch = true;
+                        this.showLoader = false;
+                    })
                     .catch(error => {this.grades = []; this.showNoMatch = true; this.showLoader = false;});
 
             }
         },
         mounted() {
-            document.title = 'Subject';
+            document.title = 'Grade';
             this.getData();
         },
         watch: {
             filterForm: {
-                handler(newValue) {localStorage.setItem("filterFormStudent", JSON.stringify(newValue))},
+                handler(newValue) {localStorage.setItem("filterFormGrade", JSON.stringify(newValue))},
                 deep: true
             },
             modals: {
@@ -144,14 +148,7 @@
 </script>
 
 <style scoped>
-    .vue-table__cell:first-child{
-        flex: 1 0 10%;
-    }
-    .vue-table__cell:nth-child(2){
-        flex: 1 0 20px;
-    }
-
-    .vue-table__cell:last-child{
-        flex: 1 0 5%;
+    .vue-table__cell{
+        flex: 1 0 22.5%;
     }
 </style>

@@ -10,6 +10,9 @@ class SpecialityRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'name' => 'required|string',
+            'description' => 'required|string'
+        ];
     }
 }

@@ -13,11 +13,15 @@ class GradeService
 {
     /**
      * @param GradeRequest $form
-     * @return Grade
      */
-    public function store(GradeRequest $form) : Grade
+    public function store(GradeRequest $form)
     {
-        return Grade::create($form->validated());
+        return DB::table('grade')->insert([
+            'student_id' => $form['student_id'],
+            'subject_id' => $form['subject_id'],
+            'grade' => $form['grade'],
+            'date' => DB::raw("STR_TO_DATE('".$form['date']."', '%Y-%d-%m')"),
+        ]);
     }
 
     /**
@@ -27,8 +31,14 @@ class GradeService
      */
     public function update(GradeRequest $form, Grade $grade) : Grade
     {
-        $grade->update($form->validated());
-
+        DB::table('grade')
+            ->where('id', $grade->id)
+            ->update([
+                'student_id' => $form['student_id'],
+                'subject_id' => $form['subject_id'],
+                'grade' => $form['grade'],
+                'date' => DB::raw("STR_TO_DATE('".$form['date']."', '%Y-%d-%m')"),
+            ]);
         return $grade;
     }
 
@@ -102,6 +112,7 @@ class GradeService
                 }
             }
         }
+
         return $query->get();
     }
 
@@ -110,7 +121,7 @@ class GradeService
      * @param string $date_to
      * @return array
      */
-    public function sortDates(string $date_from, string $date_to) : array
+    public function sortDates( $date_from,  $date_to) : array
     {
         return [
             date('Y-d-m', strtotime($date_from && $date_to ? (strtotime($date_from) < strtotime($date_to) ? $date_from: $date_to) : ($date_from? $date_from: null))),

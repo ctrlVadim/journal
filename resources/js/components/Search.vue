@@ -1,16 +1,16 @@
 <template>
     <form @submit.prevent="search" class="search-form">
-        <div class="date-sort__container" v-if="filterForm.search_field === 'date'">
+        <div class="date-sort__container" v-if="dateFields.includes(filterForm.search_field)">
             <span>From:</span>
             <date-picker v-model="filterForm.date_from"></date-picker>
             <span>To:</span>
             <date-picker v-model="filterForm.date_to"></date-picker>
         </div>
-        <input v-if="filterForm.search_field !== 'date'" type="text" name="student" v-model="filterForm.search" placeholder="Search for...">
+        <input v-if="!(dateFields.includes(filterForm.search_field))" type="text" name="student" v-model="filterForm.search" placeholder="Search for...">
         <div class="search-form__clear red-hover" v-if="filterForm.search" @click="clear">
             <i class='bx bx-x'></i>
         </div>
-        <select :class="filterForm.search_field === 'date' ? 'br-full' : ''" type="text" v-model="filterForm.search_field">
+        <select :class="dateFields.includes(filterForm.search_field) ? 'br-full' : ''" type="text" v-model="filterForm.search_field">
             <option value="" selected>Select the field</option>
             <option v-for="field in fields" :value="field">{{field.replaceAll('_', ' ')}}</option>
         </select>
@@ -29,6 +29,10 @@
             filterForm: {
                 type: Object,
                 default: () => ({}),
+            },
+            dateFields: {
+                type: Array,
+                default: () => ([]),
             },
             fields: {
                 type: Array,

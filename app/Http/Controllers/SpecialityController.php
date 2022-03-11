@@ -30,14 +30,20 @@ class SpecialityController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function view(int $id) : JsonResponse
+    public function view() : JsonResponse
     {
-        if ($speciality = Speciality::where('id', $id)->first()){
-            return response()->json($speciality, 200);
-        }else{
-            return response()->json('Grade not found', 404);
-        }
+        $speciality = Speciality::paginate(1);
+        return response()->json($speciality, 200);
     }
+
+    public function item(int $id)
+    {
+        if ($speciality = Speciality::where('id', $id)->first())
+            return response()->json($speciality, 200);
+        else
+            return response()->json('Not found', 404);
+    }
+
 
     /**
      * @param SpecialityRequest $request
@@ -46,11 +52,12 @@ class SpecialityController extends Controller
     public function store(SpecialityRequest $request) : JsonResponse
     {
         try {
-            return response()->json($this->service->create($request), 201);
+            return response()->json($this->service->store($request), 201);
         }catch (\DomainException $e){
             return response()->json($e->getMessage(), $e->getCode());
         }
     }
+
 
     /**
      * @param SpecialityRequest $request

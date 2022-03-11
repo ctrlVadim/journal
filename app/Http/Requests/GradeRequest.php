@@ -10,6 +10,11 @@ class GradeRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'student_id' => 'required',
+            'subject_id' => 'required',
+            'date' => 'required',
+            'grade' => 'required',
+        ];
     }
 }
